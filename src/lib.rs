@@ -8,14 +8,20 @@ use stylus_sdk::prelude::{entrypoint, external, sol_storage};
 
 pub mod evm;
 
+use evm::ECDSA;
+
 sol_storage! {
     #[entrypoint]
-    struct Playground {}
+    struct Playground {
+        #[borrow]
+        ECDSA ecdsa;
+    }
 }
 
 #[external]
+#[inherit(ECDSA)]
 impl Playground {
-    pub fn test(&self) -> u64 {
+    fn test(&self) -> u64 {
         0
     }
 }

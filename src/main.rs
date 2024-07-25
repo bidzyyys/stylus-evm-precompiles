@@ -2,5 +2,5 @@
 
 #[cfg(feature = "export-abi")]
 fn main() {
-    erc_20::main();
+    stylus_evm_precompiles::print_abi("APACHE-2.0", "pragma solidity ^0.8.23;");
 }

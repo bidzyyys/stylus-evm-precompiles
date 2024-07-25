@@ -2,6 +2,9 @@
 name = "stylus-evm-precompiles"
 version = "0.1.0"
 edition = "2021"
+license = "Apache-2.0"
+keywords = ["arbitrum, ethereum", "stylus", "evm"]
+description = "Playground for playing with Ethereum Precompiles in Stylus smart contracts."
 
 [dependencies]
 alloy-primitives = "0.7.6"
@@ -10,9 +13,18 @@ stylus-sdk = "0.5.2"
 stylus-proc = "0.5.2"
 mini-alloc = "0.4.2"
 
+[dev-dependencies]
+tokio = { version = "1.12.0", features = ["full"] }
+ethers = "2.0"
+eyre = "0.6.8"
+
 [features]
 export-abi = ["stylus-sdk/export-abi"]
 debug = ["stylus-sdk/debug"]
+
+[[bin]]
+name = "stylus-evm-precompiles"
+path = "src/main.rs"
 
 [lib]
 crate-type = ["lib", "cdylib"]
@@ -24,4 +36,3 @@ lto = true
 panic = "abort"
 opt-level = "s"
 
-[workspace]
