@@ -82,9 +82,9 @@ impl ECDSA {
             .ecrecover(call, hash, v, r, s)
             .expect("should call `ecrecover` precompile");
 
-        if recovered.is_zero() {
-            return Err(ECDSAInvalidSignature {}.into());
-        }
+        // if recovered.is_zero() {
+        // return Err(ECDSAInvalidSignature {}.into());
+        // }
         Ok(recovered)
     }
 }
