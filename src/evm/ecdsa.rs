@@ -1,4 +1,6 @@
-use alloy_primitives::{address, Address, FixedBytes};
+use alloc::vec::Vec;
+
+use alloy_primitives::{address, Address};
 use alloy_sol_types::sol;
 use stylus_proc::{sol_interface, sol_storage, SolidityError};
 use stylus_sdk::{call::Call, prelude::external, storage::TopLevelStorage};
@@ -72,19 +74,23 @@ impl ECDSA {
     /// * If `ecrecover` precompile fail to execute.
     fn recover(
         &mut self,
-        hash: FixedBytes<32>,
-        v: u8,
-        r: FixedBytes<32>,
-        s: FixedBytes<32>,
-    ) -> Result<Address, Error> {
-        let call = Call::new_in(self);
-        let recovered = EVMPrecompile::new(ECRECOVER_ADDR)
-            .ecrecover(call, hash, v, r, s)
-            .expect("should call `ecrecover` precompile");
-
-        // if recovered.is_zero() {
-        // return Err(ECDSAInvalidSignature {}.into());
-        // }
+        // hash: FixedBytes<32>,
+        // v: u8,
+        // r: FixedBytes<32>,
+        // s: FixedBytes<32>,
+    ) -> Result<Address, Vec<u8>> {
+        // cast abi-encode
+        //     "ecrecover(bytes32,uint8,bytes32,bytes32)(address)"
+        //     0xa1de988600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2
+        //     28
+        //     0x65e72b1cf8e189569963750e10ccb88fe89389daeeb8b735277d59cd6885ee82
+        //     0x3eb5a6982b540f185703492dab77b863a88ce01f27e21ade8b2879c10fc9e653
+        let data = "a1de988600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2000000000000000000000000000000000000000000000000000000000000001c65e72b1cf8e189569963750e10ccb88fe89389daeeb8b735277d59cd6885ee823eb5a6982b540f185703492dab77b863a88ce01f27e21ade8b2879c10fc9e653";
+        let data: Vec<u8> = hex::decode(data).expect("should work");
+        let recovered =
+            stylus_sdk::call::call(Call::new_in(self), ECRECOVER_ADDR, &data)
+                .expect("should work");
+        let recovered = Address::from_slice(recovered.as_slice());
         Ok(recovered)
     }
 }
